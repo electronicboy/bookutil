@@ -51,7 +51,7 @@ Maven!
         <dependency>
             <groupId>pw.valaria</groupId>
             <artifactId>bookutil</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

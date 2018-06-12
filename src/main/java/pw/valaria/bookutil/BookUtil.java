@@ -16,7 +16,6 @@ public class BookUtil {
     private Method addChannelMethod = null;
     private Plugin plugin;
 
-
     /**
      * @param plugin plugin to bind to the instance
      */
@@ -35,7 +34,16 @@ public class BookUtil {
 
         ItemStack old = player.getInventory().getItemInMainHand();
 
-        player.getInventory().setItemInMainHand(book);
+        if (checkChannel(player)) {
+            player.getInventory().setItemInMainHand(book);
+            player.sendPluginMessage(plugin, BOOK_CHANNEL, new byte[]{0});
+        }
+
+        player.getInventory().setItemInMainHand(old);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public boolean checkChannel(Player player) {
 
         if (!player.getListeningPluginChannels().contains(BOOK_CHANNEL)) {
 
@@ -46,20 +54,22 @@ public class BookUtil {
                     addChannelMethod = aClass.getMethod("addChannel", String.class);
                 } catch (NoSuchMethodException e1) {
                     e1.printStackTrace();
+                    return false;
                 }
             }
 
 
-            try {
-                addChannelMethod.invoke(player, BOOK_CHANNEL);
-            } catch (IllegalAccessException | InvocationTargetException e1) {
-                e1.printStackTrace();
+            if (addChannelMethod != null) {
+                try {
+                    addChannelMethod.invoke(player, BOOK_CHANNEL);
+                } catch (IllegalAccessException | InvocationTargetException e1) {
+                    e1.printStackTrace();
+                    return false;
+                }
             }
-
         }
 
-        player.sendPluginMessage(plugin, BOOK_CHANNEL, new byte[]{0});
-        player.getInventory().setItemInMainHand(old);
+        return player.getListeningPluginChannels().contains(BOOK_CHANNEL);
     }
 }
 
